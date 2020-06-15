@@ -20,4 +20,9 @@ public class RoleDAOImpl implements RoleDAO {
         TypedQuery<String> query = sessionFactory.getCurrentSession().createQuery("select name from Role");
         return query.getResultList();
     }
+
+    @Override
+    public Role getRoleById(long id) {
+        return sessionFactory.getCurrentSession().get(Role.class, id);
+    }
 }

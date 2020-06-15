@@ -1,6 +1,8 @@
 package kg.max.crud.model;
 
 import com.sun.istack.internal.NotNull;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Fetch;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -30,10 +32,21 @@ public class User implements UserDetails {
     @Column(name = "surname")
     private String surname;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
+
+    public User(){}
+
+    public User(UserDTO userDTO){
+        this.id = userDTO.getId();
+        this.username = userDTO.getUsername();
+        this.password = userDTO.getPassword();
+        this.firstname = userDTO.getFirstname();
+        this.surname = userDTO.getSurname();
+    }
 
     public long getId() {
         return id;

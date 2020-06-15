@@ -11,9 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -56,20 +54,21 @@ public class AdminController {
     public ModelAndView addUser(@ModelAttribute("userDTO") UserDTO userDTO) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("redirect:/admin/");
-        User user = new User();
+        User user = new User(userDTO);
         Set<Role> roles = new HashSet<>();
 
-        if (userDTO.getRole().equals("ROLE_ADMIN")) {
-            roles.add(new Role(1, "ROLE_USER"));
-            roles.add(new Role(2, "ROLE_ADMIN"));
-        } else {
-            roles.add(new Role(1, "ROLE_USER"));
+        for (String role : userDTO.getRoles()){
+            if (role.equals("ROLE_USER")){
+                roles.add(roleService.getRoleById(1));
+            }
+            if (role.equals("ROLE_ADMIN")){
+                roles.add(roleService.getRoleById(2));
+            }
+        }
+        if (user.getPassword() != null || !user.getPassword().isEmpty()){
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
 
-        user.setFirstname(userDTO.getFirstname());
-        user.setSurname(userDTO.getSurname());
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
         user.setRoles(roles);
         userService.add(user);
         return modelAndView;
@@ -81,20 +80,19 @@ public class AdminController {
         modelAndView.setViewName("edit");
 
         User user = userService.getById(id);
-        UserDTO userDTO = new UserDTO();
+
 
         if (user != null){
+            UserDTO userDTO = new UserDTO(user);
+
             for (Role role : user.getRoles()){
                 if (role.getName().equals("ROLE_ADMIN")){
-                    userDTO.setRole("ROLE_ADMIN");
-                    break;
+                    userDTO.setRoles(new ArrayList<>(Arrays.asList("ROLE_ADMIN")));
                 }
-                userDTO.setRole("ROLE_USER");
+                if (role.getName().equals("ROLE_USER")){
+                    userDTO.setRoles(new ArrayList<>(Arrays.asList("ROLE_USER")));
+                }
             }
-            userDTO.setId(user.getId());
-            userDTO.setFirstname(user.getFirstname());
-            userDTO.setSurname(user.getSurname());
-            userDTO.setUsername(user.getUsername());
             modelAndView.addObject("userDTO", userDTO);
         }
 
@@ -106,21 +104,24 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("redirect:/admin/");
 
-        User user = new User();
+        User user = new User(userDTO);
+        if (user.getPassword().isEmpty() || user.getPassword() == null){
+            user.setPassword(userService.getUserPasswordById(user.getId()));
+        }else {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
         Set<Role> roles = new HashSet<>();
 
-        if (userDTO.getRole().equals("ROLE_ADMIN")) {
-            roles.add(new Role(1, "ROLE_USER"));
-            roles.add(new Role(2, "ROLE_ADMIN"));
-        } else {
-            roles.add(new Role(1, "ROLE_USER"));
+        for (String role : userDTO.getRoles()){
+            if (role.equals("ROLE_USER")){
+                roles.add(roleService.getRoleById(1));
+            }
+            if (role.equals("ROLE_ADMIN")){
+                roles.add(roleService.getRoleById(2));
+            }
         }
-        user.setId(userDTO.getId());
-        user.setFirstname(userDTO.getFirstname());
-        user.setSurname(userDTO.getSurname());
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
         user.setRoles(roles);
+
         userService.edit(user);
         return modelAndView;
     }

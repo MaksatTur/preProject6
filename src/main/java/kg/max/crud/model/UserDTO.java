@@ -1,5 +1,7 @@
 package kg.max.crud.model;
 
+import java.util.List;
+
 public class UserDTO {
 
     private long id;
@@ -7,17 +9,25 @@ public class UserDTO {
     private String password;
     private String firstname;
     private String surname;
-    private String role;
+    private List<String> roles;
 
     public UserDTO() {
     }
 
-    public UserDTO(String username, String password, String firstname, String surname, String roles) {
+    public UserDTO(String username, String password, String firstname, String surname, List<String> roles) {
         this.username = username;
         this.password = password;
         this.firstname = firstname;
         this.surname = surname;
-        this.role = roles;
+        this.roles = roles;
+    }
+
+    public UserDTO(User user){
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.firstname = user.getFirstname();
+        this.surname = user.getSurname();
+        this.password = user.getPassword();
     }
 
     public long getId() {
@@ -60,11 +70,11 @@ public class UserDTO {
         this.surname = surname;
     }
 
-    public String getRole() {
-        return role;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }

@@ -48,4 +48,10 @@ public class UserServiceImpl implements UserService {
         userDAO.add(user);
     }
 
+    @Override
+    @Transactional
+    public String getUserPasswordById(long id) {
+        return userDAO.getUserPasswordById(id);
+    }
+
 }

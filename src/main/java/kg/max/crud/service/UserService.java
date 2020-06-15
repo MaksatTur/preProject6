@@ -14,4 +14,6 @@ public interface UserService {
     User getById(long id);
 
     void add(User user);
+
+    String getUserPasswordById(long id);
 }

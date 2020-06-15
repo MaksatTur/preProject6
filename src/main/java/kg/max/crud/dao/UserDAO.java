@@ -16,4 +16,6 @@ public interface UserDAO {
     void add(User user);
 
     User findByUsername(String username);
+
+    String getUserPasswordById(long id);
 }

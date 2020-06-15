@@ -47,11 +47,19 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    @Transactional
     public User findByUsername(String username) {
         List<User> users = sessionFactory.getCurrentSession().createQuery("from User where username = :un", User.class).setParameter("un", username).list();
         if (users.size() > 0) {
             return users.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public String getUserPasswordById(long id) {
+        List<String> passwords = sessionFactory.getCurrentSession().createQuery("select password from User where id = :id", String.class).setParameter("id", id).list();
+        if (passwords.size() > 0){
+            return passwords.get(0);
         }
         return null;
     }

@@ -19,4 +19,10 @@ public class RoleServiceImpl implements RoleService {
     public List<String> getAllRolesName() {
         return roleDAO.getAllRolesName();
     }
+
+    @Override
+    @Transactional
+    public Role getRoleById(long id) {
+        return roleDAO.getRoleById(id);
+    }
 }

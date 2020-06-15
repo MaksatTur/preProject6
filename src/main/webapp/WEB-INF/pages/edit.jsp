@@ -55,7 +55,7 @@
             <div class="form-group col-md-12">
                 <label class="col-md-3 control-label">Roles</label>
                 <div class="col-md-7">
-                    <form:select path="role" items="${roles}" multiple="false" cssClass="form-control input-sm" />
+                    <form:select path="roles" items="${roles}" multiple="true" cssClass="form-control input-sm" />
                 </div>
             </div>
         </div>
